@@ -55,20 +55,17 @@ server.post('/api/users', (req, res) => {
 //DELETE user by id
 server.delete('/api/users/:id', (req, res) => {
     const id = (req.params.id)
-    users = users.filter(user => user.id != id)
-    // res.status(204).end()
-
-    if(!users) {
+    users = users.filter(user => user.id !== id)
+  
+    if(!id) {
         res.status(404).json({ message: "The user with the specified ID does not exist." })
     }
 
     try {
-        res.status(200).json(users)
+        res.status(200).json(users).end()
     } catch (error) {
         res.status(500).json({ message:  "The user could not be removed" })
     }
-
-    // res.status(200).json(users)
  
 })
 
@@ -80,18 +77,27 @@ server.put('api/users/:id', (req, res) => {
     let found = users.find(user => user.id === id)
 
     
-    if(found) {
-        Object.assign(found, changes)
-        res.status(200).json(found)
-    } else {
-        res.status(404).json({ message: 'The user with the specified ID does not exist'})
+    // if(found) {
+    //     Object.assign(found, changes)
+    //     res.status(200).json(found)
+    // } else {
+    //     res.status(404).json({ message: 'The user with the specified ID does not exist'})
+    // }
+
+    if(!(found.name || found.bio)) {
+        res.status(400).json({ message: 'Please provide name and bio for the user.'})
     }
 
-    // try {
-    //     res.status(200).json(users)
-    // } catch (error) {
-    //     res.status(500).json({ errorMessage: "The user information could not be modified." })
-    // }
+    try {
+        if(!found) {
+            res.status(404).json({ message: 'The user with the specified ID does not exist'})
+        } else {
+            Object.assign(found, changes)
+            res.status(200).json(users)
+        }
+    } catch (error) {
+        res.status(500).json({ errorMessage: "The user information could not be modified." })
+    }
 
 
 
