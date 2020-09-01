@@ -1,5 +1,6 @@
 const express = require('express')
 const shortid = require('shortid')
+const { json } = require('express')
 
 const server = express()
 
@@ -52,11 +53,12 @@ server.post('/api/users', (req, res) => {
 })
 
 //DELETE user by id
-server.delete('/api/users/:id'), (req, res) => {
+server.delete('/api/users/:id', (req, res) => {
     const id = (req.params.id)
-    users = users.filter(user => user.id !== id)
+    users = users.filter(user => user.id != id)
+    // res.status(204).end()
 
-    if(!user.id) {
+    if(!users) {
         res.status(404).json({ message: "The user with the specified ID does not exist." })
     }
 
@@ -65,17 +67,19 @@ server.delete('/api/users/:id'), (req, res) => {
     } catch (error) {
         res.status(500).json({ message:  "The user could not be removed" })
     }
+
+    // res.status(200).json(users)
  
-}
+})
 
 //PUT request
-server.put('api/users/:id'), (req, res) => {
+server.put('api/users/:id', (req, res) => {
     const changes = req.body
-    const id = (req.body)
+    const id = (req.params.id)
 
     let found = users.find(user => user.id === id)
 
-
+    
     if(found) {
         Object.assign(found, changes)
         res.status(200).json(found)
@@ -83,11 +87,15 @@ server.put('api/users/:id'), (req, res) => {
         res.status(404).json({ message: 'The user with the specified ID does not exist'})
     }
 
-    users = users.filter(user => user.id !== id)
+    // try {
+    //     res.status(200).json(users)
+    // } catch (error) {
+    //     res.status(500).json({ errorMessage: "The user information could not be modified." })
+    // }
 
-    res.status(200).json(users)
 
-}
+
+})
 
 const port = 8000
 server.listen(port, () => {
