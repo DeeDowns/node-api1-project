@@ -70,19 +70,12 @@ server.delete('/api/users/:id', (req, res) => {
 })
 
 //PUT request
-server.put('api/users/:id', (req, res) => {
+server.put('/api/users/:id', (req, res) => {
     const changes = req.body
     const id = (req.params.id)
 
     let found = users.find(user => user.id === id)
 
-    
-    // if(found) {
-    //     Object.assign(found, changes)
-    //     res.status(200).json(found)
-    // } else {
-    //     res.status(404).json({ message: 'The user with the specified ID does not exist'})
-    // }
 
     if(!(found.name || found.bio)) {
         res.status(400).json({ message: 'Please provide name and bio for the user.'})
@@ -98,8 +91,6 @@ server.put('api/users/:id', (req, res) => {
     } catch (error) {
         res.status(500).json({ errorMessage: "The user information could not be modified." })
     }
-
-
 
 })
 
